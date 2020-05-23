@@ -27,8 +27,7 @@ jobs:
             kubectl get services
           name: Test cluster
   aws-eks/create-cluster:
-    cluster-name: my-eks-de
-    aws-region: us-east-2
+    executor: aws-eks/python3
     steps:
       vpc-public-subnets:
         default: "subnet-05226b7df7a7f93a7,subnet-092acba3f13e38833"
@@ -42,6 +41,7 @@ workflows:
     jobs:
       - aws-eks/create-cluster:
           cluster-name: mew
+          aws-region: us-east-2
           requires:
             - aws-eks/create-cluster
       - test-cluster:
