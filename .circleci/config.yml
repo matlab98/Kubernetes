@@ -7,6 +7,19 @@ orbs:
   aws-cli: circleci/aws-cli@0.1
 
 jobs:
+
+    developdeploy:
+    docker:
+    - image: nginx
+    steps:
+    - checkout
+    - add_ssh_keys:
+        fingerprints:
+        - d7:78:96:12:2d:73:19:01:c2:41:25:5a:2a:f0:28:a8
+    - run:
+        name: despliegue desarrollo
+        command: |
+
   Cluster-demo:
     executor: aws-eks/python3
     parameters:
