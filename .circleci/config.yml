@@ -33,7 +33,7 @@ workflows:
       - aws-eks/create-cluster:
           cluster-name: my-eks-dem
           aws-region: us-east-2
-          vpc-public-subnets: subnet-05226b7df7a7f93a7,subnet-092acba3f13e38833
+          vpc-public-subnets: "subnet-05226b7df7a7f93a7,subnet-092acba3f13e38833"
           node-security-groups: sg-0512fccb0fe05efd6
           aws-max-polling-wait-time: "25m"
           tags: "name=cci_orbs,purpose=orb_test"
