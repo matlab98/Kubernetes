@@ -38,7 +38,6 @@ workflows:
           tags: "name=cci_orbs,purpose=orb_test"
           verbose: 3
           show-eksctl-command: true
-      - quick-cluster-tests
       - test-cluster:
           cluster-name: my-eks-demo
           requires:
