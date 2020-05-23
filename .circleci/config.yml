@@ -31,23 +31,10 @@ workflows:
   deployment:
     jobs:
       - aws-eks/create-cluster:
-          cluster-name: my-eks-demo
-          nodegroup-name: "orbtest-ng-1"
-          node-type: "t2.large"
+          cluster-name: my-eks-dem
           aws-region: us-east-2
           zones: subnet-05226b7df7a7f93a7,subnet-092acba3f13e38833
-          nodes: 4
-          nodes-min: 3
-          nodes-max: 4
-          node-volume-size: 30
-          node-volume-type: "gp2"
-          node-security-groups: sg-0512fccb0fe05efd6
-          max-pods-per-node: 30
-          node-ami: "auto"
-          node-ami-family: "AmazonLinux2"
-          node-private-networking: false
-          node-labels: "nodeowner=cci,nodepurpose=testing"
-          vpc-cidr: "192.168.0.0/16"
+          security-groups: sg-0512fccb0fe05efd6
           aws-max-polling-wait-time: "25m"
           tags: "name=cci_orbs,purpose=orb_test"
           verbose: 3
