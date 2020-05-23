@@ -7,20 +7,7 @@ orbs:
   aws-cli: circleci/aws-cli@0.1
 
 jobs:
-
-    developdeploy:
-    docker:
-    - image: nginx
-    steps:
-    - checkout
-    - add_ssh_keys:
-        fingerprints:
-        - d7:78:96:12:2d:73:19:01:c2:41:25:5a:2a:f0:28:a8
-    - run:
-        name: despliegue desarrollo
-        command: |
-
-  Cluster-demo:
+  test-cluster:
     executor: aws-eks/python3
     parameters:
       cluster-name:
@@ -29,19 +16,48 @@ jobs:
         type: string
     steps:
       - aws-cli/setup:
-          aws-access-key-id: ${{ AWS_ACCESS_KEY_ID }}
-          aws-region: ${{ AWS_DEFAULT_REGION }}
-          aws-secret-access-key: ${{ AWS_SECRET_ACCESS_KEY_ID }}
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-region: AWS_DEFAULT_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY_ID
       - kubernetes/install
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: Cluster-demo
       - run:
           command: |
             kubectl get services
-          name: Cluster-demo
-
+          name: Test cluster
 
 workflows:
   deployment:
-    jobs:        
-      - Cluster-demo
+    jobs:
+      - aws-eks/create-cluster:
+          cluster-name: my-eks-demo
+          nodegroup-name: "orbtest-ng-1"
+          node-type: "t2.large"
+          aws-region: us-east-2
+          zones: subnet-05226b7df7a7f93a7,subnet-092acba3f13e38833
+          nodes: 4
+          nodes-min: 3
+          nodes-max: 4
+          node-volume-size: 30
+          node-volume-type: "gp2"
+          node-security-groups: sg-0512fccb0fe05efd6
+          max-pods-per-node: 30
+          node-ami: "auto"
+          node-ami-family: "AmazonLinux2"
+          node-private-networking: false
+          node-labels: "nodeowner=cci,nodepurpose=testing"
+          vpc-cidr: "192.168.0.0/16"
+          aws-max-polling-wait-time: "25m"
+          tags: "name=cci_orbs,purpose=orb_test"
+          verbose: 3
+          show-eksctl-command: true
+      - quick-cluster-tests
+      - test-cluster:
+          cluster-name: my-eks-demo
+          requires:
+            - aws-eks/create-cluster
+      - aws-eks/delete-cluster:
+          cluster-name: my-eks-demo
+          requires:
+            - test-cluster
