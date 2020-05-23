@@ -29,9 +29,9 @@ jobs:
         type: string
     steps:
       - aws-cli/setup:
-          aws-access-key-id: $AWS_ACCESS_KEY_ID
-          aws-region: $AWS_DEFAULT_REGION
-          aws-secret-access-key: $AWS_SECRET_ACCESS_KEY_ID
+          aws-access-key-id: ${{ AWS_ACCESS_KEY_ID }}
+          aws-region: ${{ AWS_DEFAULT_REGION }}
+          aws-secret-access-key: ${{ AWS_SECRET_ACCESS_KEY_ID }}
       - kubernetes/install
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: Cluster-demo
@@ -39,38 +39,9 @@ jobs:
           command: |
             kubectl get services
           name: Cluster-demo
-  undeploy-application:
-    executor: aws-eks/python3
-    parameters:
-      cluster-name:
-        description: |
-          Cluster-demo
-        type: string
-      aws-region:
-        description: |
-          us-east-2
-        type: string
-        default: ""
-     steps:
-        - aws-eks/update-kubeconfig-with-authenticator:
-            cluster-name: Cluster-demo
-            install-kubectl: true
-            aws-region: us-east-2
-        - kubernetes/delete-resource:
-            resource-types: "deployment,service"
-            label-selector: "app=demo"
-            wait: true
-        - run:
-            name: Check on pod status
-            command: |
-              kubectl get pods
+
 
 workflows:
   deployment:
     jobs:        
-      - aws-eks/delete-cluster:
-          cluster-name: eks-orb-demo-app-deployment
-          aws-region: $AWS_DEFAULT_REGION
-          wait: true
-          requires:
-            - undeploy-application
+      - Cluster-demo
