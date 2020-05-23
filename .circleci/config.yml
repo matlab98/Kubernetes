@@ -26,24 +26,28 @@ jobs:
           command: |
             kubectl get services
           name: Test cluster
-
+  - aws-eks/create-cluster:
+      cluster-name: my-eks-de
+      aws-region: us-east-2
+      steps:
+        vpc-public-subnets:
+          default: "subnet-05226b7df7a7f93a7,subnet-092acba3f13e38833"
+          description: |
+            Specify this to re-use public subnets of an existing VPC.
+            e.g. subnet-0ff156e0c4a6d300c,subnet-0426fb4a607393184
+            type: string
+       aws-max-polling-wait-time: "25m"
+       tags: "name=cci_orbs,purpose=orb_test"
+       verbose: 3
+       show-eksctl-command: true
+       
 workflows:
   deployment:
     jobs:
       - aws-eks/create-cluster:
-          cluster-name: my-eks-dem
-          aws-region: us-east-2
-          steps:
-            vpc-public-subnets:
-              default: "subnet-05226b7df7a7f93a7,subnet-092acba3f13e38833"
-              description: |
-                Specify this to re-use public subnets of an existing VPC.
-                e.g. subnet-0ff156e0c4a6d300c,subnet-0426fb4a607393184
-              type: string
-          aws-max-polling-wait-time: "25m"
-          tags: "name=cci_orbs,purpose=orb_test"
-          verbose: 3
-          show-eksctl-command: true
+          cluster-name: mew
+          requires:
+            - aws-eks/create-cluster
       - test-cluster:
           cluster-name: my-eks-demo
           requires:
