@@ -37,7 +37,7 @@ jobs:
         description: |
           us-east-2
         type: string
-        default: "" 
+        default: us-east-2 
 
 workflows:
   deployment:
