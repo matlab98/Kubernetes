@@ -36,10 +36,6 @@ jobs:
           Specify this to re-use public subnets of an existing VPC.
           e.g. subnet-0ff156e0c4a6d300c,subnet-0426fb4a607393184
           type: string
-     aws-max-polling-wait-time: "25m"
-     tags: "name=cci_orbs,purpose=orb_test"
-     verbose: 3
-     show-eksctl-command: true
        
 workflows:
   deployment:
