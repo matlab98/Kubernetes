@@ -7,7 +7,7 @@ orbs:
   aws-cli: circleci/aws-cli@0.1
 
 jobs:
-  test-cluster:
+  Cluster-demo:
     executor: aws-eks/python3
     parameters:
       cluster-name:
@@ -25,12 +25,14 @@ jobs:
       - run:
           command: |
             kubectl get services
-          name: test-cluster
+          name: Cluster-demo
 
 workflows:
   deployment:
-    jobs:
+    jobs:        
       - aws-eks/delete-cluster:
-          cluster-name: Cluster-demo
+          cluster-name: eks-orb-demo-app-deployment
+          aws-region: $AWS_DEFAULT_REGION
+          wait: true
           requires:
-            - test-cluster
+            - undeploy-application
